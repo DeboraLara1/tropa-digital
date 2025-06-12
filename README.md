@@ -1,46 +1,74 @@
-# Getting Started with Create React App
+💻 Desafio Técnico - Tela de Login e Navegação
+Este projeto é parte de um desafio técnico para a vaga de Front-End e tem como objetivo demonstrar conhecimentos em React ou Next.js, estilização com Styled Components ou SCSS, implementação de rotas e simulação de um fluxo de login.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+🚀 Tecnologias utilizadas
+React (ou Next.js)
 
-## Available Scripts
+Styled Components (ou SCSS)
 
-In the project directory, you can run:
+React Router DOM (se React puro)
 
-### `npm start`
+Vite ou Create React App (caso React)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+TypeScript (opcional, se utilizado)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+📦 Funcionalidades
+✅ Tela de login funcional (fluxo simulado, sem autenticação real)
 
-### `npm test`
+✅ Estilização com Styled Components ou SCSS
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+✅ Rotas protegidas (páginas acessíveis apenas após login simulado)
 
-### `npm run build`
+✅ Redirecionamento automático com base no status de autenticação
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+✅ Responsividade básica para dispositivos móveis
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+🔐 Fluxo de Login Simulado
+O usuário insere um e-mail e senha fictícios (validação simples no front-end)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Ao clicar em Entrar, o sistema armazena um token simulado no localStorage ou context
 
-### `npm run eject`
+O usuário é redirecionado para a página interna protegida
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Ao clicar em Sair, o token é removido e o usuário volta para a tela de login
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+📂 Estrutura de Pastas (exemplo)
+css
+Copiar
+Editar
+src/
+├── assets/
+├── components/
+├── pages/
+│   ├── Login.jsx
+│   ├── Dashboard.jsx
+│   └── ProtectedRoute.jsx
+├── routes/
+│   └── AppRoutes.jsx
+├── styles/
+│   └── globalStyles.js
+└── App.jsx
+▶️ Como rodar o projeto localmente
+bash
+Copiar
+Editar
+# 1. Clone o repositório
+git clone https://github.com/seu-usuario/seu-projeto.git
+cd seu-projeto
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+# 2. Instale as dependências
+npm install
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# 3. Inicie o servidor de desenvolvimento
+npm run dev
+Certifique-se de ter o Node.js e o npm/yarn instalados na máquina.
 
-## Learn More
+📝 Considerações
+O projeto tem foco apenas no front-end.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+O login não consome uma API externa; o fluxo é simulado internamente.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+O código segue princípios de componentização e separação de responsabilidades.
+
+📄 Licença
+Este projeto é apenas para fins de avaliação técnica.
