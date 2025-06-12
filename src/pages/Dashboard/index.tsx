@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import {
   FiUsers as _FiUsers,
@@ -29,8 +29,9 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = React.useState<string>("Eventos");
   const handleMenuClick = (menu: string) => setActiveMenu(menu);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const eventos = [
+  const allEventos = [
     {
       nome: "deClube do Laço Coração Pantaneiro",
       equipes: 10,
@@ -47,6 +48,10 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  const eventos = allEventos.filter(evento => 
+    evento.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container>
       <Sidebar>
@@ -55,21 +60,29 @@ const Dashboard: React.FC = () => {
             <img src={logo} alt="Logo" style={{ height: 24, marginRight: 6 }} />
           </Logo>
           <Menu>
-            <MenuItem>
+            <MenuItem 
+              active={activeMenu === "Dashboard"}
+              onClick={() => handleMenuClick("Dashboard")}
+            >
               <FiList /> Dashboard
             </MenuItem>
-            <MenuItem active>
+            <MenuItem 
+              active={activeMenu === "Eventos"}
+              onClick={() => handleMenuClick("Eventos")}
+            >
               <FiClipboard /> Eventos
             </MenuItem>
-            <MenuItem>
+            <MenuItem
+              active={activeMenu === "Equipes"}
+              onClick={() => handleMenuClick("Equipes")}
+            >
               <FiUsers /> Equipes
             </MenuItem>
             <MenuItem
               active={activeMenu === "Inscrições"}
               onClick={() => handleMenuClick("Inscrições")}
             >
-              {" "}
-              <FiClipboard /> Inscrições{" "}
+              <FiClipboard /> Inscrições
             </MenuItem>
           </Menu>
         </div>
@@ -115,7 +128,11 @@ const Dashboard: React.FC = () => {
               <SearchIconWrapper>
                 <FiSearch />
               </SearchIconWrapper>
-              <SearchInput placeholder="Buscar membros" />
+              <SearchInput 
+                placeholder="Buscar membros" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </SearchWrapper>
             <AddButton>
               <FiPlus /> Inserir novo evento
