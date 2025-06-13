@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   FiUsers as _FiUsers,
@@ -8,6 +8,8 @@ import {
   FiEdit2 as _FiEdit2,
   FiSearch as _FiSearch,
   FiPlus as _FiPlus,
+  FiMenu as _FiMenu,
+  FiX as _FiX,
 } from "react-icons/fi";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -21,8 +23,8 @@ const FiLogOut = _FiLogOut as unknown as React.ElementType;
 const FiEdit2 = _FiEdit2 as unknown as React.ElementType;
 const FiSearch = _FiSearch as unknown as React.ElementType;
 const FiPlus = _FiPlus as unknown as React.ElementType;
-
-
+const FiMenu = _FiMenu as unknown as React.ElementType;
+const FiX = _FiX as unknown as React.ElementType;
 
 const Dashboard: React.FC = () => {
   const { logout } = useAuth();
@@ -30,6 +32,7 @@ const Dashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = React.useState<string>("Eventos");
   const handleMenuClick = (menu: string) => setActiveMenu(menu);
   const [searchTerm, setSearchTerm] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const allEventos = [
     {
@@ -54,38 +57,48 @@ const Dashboard: React.FC = () => {
 
   return (
     <Container>
-      <Sidebar>
-        <div>
+      {/* Menu sanduíche mobile */}
+      <HamburgerBar>
+        <LogoMobile>
+          <img src={logo} alt="Logo Mobile" style={{ height: 24, marginRight: 6 }} />
+        </LogoMobile>
+        <HamburgerButton onClick={() => setMenuOpen(true)}>
+          <FiMenu size={28} />
+        </HamburgerButton>
+      </HamburgerBar>
+      {/* Sidebar normal para desktop/tablet */}
+      <Sidebar menuOpen={menuOpen}>
+        <SidebarContent>
           <Logo>
             <img src={logo} alt="Logo" style={{ height: 24, marginRight: 6 }} />
           </Logo>
           <Menu>
             <MenuItem 
               active={activeMenu === "Dashboard"}
-              onClick={() => handleMenuClick("Dashboard")}
+              onClick={() => { handleMenuClick("Dashboard"); setMenuOpen(false); }}
             >
-              <FiList /> Dashboard
+              <FiList /><span className="menu-text">Dashboard</span>
             </MenuItem>
             <MenuItem 
               active={activeMenu === "Eventos"}
-              onClick={() => handleMenuClick("Eventos")}
+              onClick={() => { handleMenuClick("Eventos"); setMenuOpen(false); }}
             >
-              <FiClipboard /> Eventos
+              <FiClipboard /><span className="menu-text">Eventos</span>
             </MenuItem>
             <MenuItem
               active={activeMenu === "Equipes"}
-              onClick={() => handleMenuClick("Equipes")}
+              onClick={() => { handleMenuClick("Equipes"); setMenuOpen(false); }}
             >
-              <FiUsers /> Equipes
+              <FiUsers /><span className="menu-text">Equipes</span>
             </MenuItem>
             <MenuItem
               active={activeMenu === "Inscrições"}
-              onClick={() => handleMenuClick("Inscrições")}
+              onClick={() => { handleMenuClick("Inscrições"); setMenuOpen(false); }}
             >
-              <FiClipboard /> Inscrições
+              <FiClipboard /><span className="menu-text">Inscrições</span>
             </MenuItem>
           </Menu>
-        </div>
+        </SidebarContent>
         <UserSection>
           <UserInfo>
             <Avatar>
@@ -114,7 +127,13 @@ const Dashboard: React.FC = () => {
             </UserAction>
           </UserActions>
         </UserSection>
+        {/* Botão fechar menu mobile */}
+        <CloseMenuButton onClick={() => setMenuOpen(false)}>
+          <FiX size={28} />
+        </CloseMenuButton>
       </Sidebar>
+      {/* Overlay para fechar menu ao clicar fora */}
+      {menuOpen && <SidebarOverlay onClick={() => setMenuOpen(false)} />}
       <Main>
         <HeaderCard>
           <Welcome>
@@ -138,6 +157,37 @@ const Dashboard: React.FC = () => {
               <FiPlus /> Inserir novo evento
             </AddButton>
           </CardHeader>
+          <EventsCardsMobile>
+            {eventos.map((evento, idx) => (
+              <EventCard key={idx}>
+                <EventCardHeader>
+                  <EventIconArea>
+                    <FiClipboard size={22} color="#d26a3a" />
+                  </EventIconArea>
+                  <EventCardTitle>{evento.nome}</EventCardTitle>
+                  <EventCardMenu>
+                    <span style={{ color: '#d26a3a', fontSize: '1.5rem', cursor: 'pointer' }}>⋯</span>
+                  </EventCardMenu>
+                </EventCardHeader>
+                <EventCardInfoRow>
+                  <EventCardLabel>Total de equipes</EventCardLabel>
+                  <EventCardValue>{evento.equipes}</EventCardValue>
+                </EventCardInfoRow>
+                <EventCardInfoRow>
+                  <EventCardLabel>Status</EventCardLabel>
+                  <EventStatusBadge ativo={evento.status === "Ativo"}>
+                    {evento.status}
+                  </EventStatusBadge>
+                </EventCardInfoRow>
+                <EventCardInfoRow>
+                  <EventCardLabel>Data</EventCardLabel>
+                  <EventCardValue>
+                    <TableLink href={evento.link}>{evento.data}</TableLink>
+                  </EventCardValue>
+                </EventCardInfoRow>
+              </EventCard>
+            ))}
+          </EventsCardsMobile>
           <Table>
             <thead>
               <tr>
@@ -196,30 +246,66 @@ const Container = styled.div`
   display: flex;
   min-height: 100vh;
   background: #fafafa;
+  flex-direction: row;
   @media (max-width: 900px) {
+    flex-direction: row;
+  }
+  @media (max-width: 600px) {
     flex-direction: column;
   }
 `;
 
-const Sidebar = styled.aside`
+const Sidebar = styled.aside<{menuOpen?: boolean}>`
   width: 220px;
   background: #fff;
   border-right: 1px solid #ececec;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0;
   min-height: 100vh;
-  @media (max-width: 900px) {
-    flex-direction: row;
-    width: 100vw;
-    min-height: unset;
-    border-right: none;
-    border-bottom: 1px solid #ececec;
-    height: auto;
-    position: sticky;
+  z-index: 200;
+  transition: width 0.2s;
+  @media (max-width: 900px) and (min-width: 601px) {
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  @media (max-width: 600px) {
+    position: fixed;
+    left: 0;
     top: 0;
-    z-index: 10;
+    height: 100vh;
+    width: 80vw;
+    max-width: 320px;
+    transform: ${({menuOpen}) => menuOpen ? 'translateX(0)' : 'translateX(-100%)'};
+    transition: transform 0.3s;
+    border-right: none;
+    border-bottom: none;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.10);
+    min-height: 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-y: auto;
+    padding-bottom: 32px;
+  }
+`;
+
+const SidebarContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 600px) {
+    padding-top: 54px;
+    justify-content: flex-start;
+    gap: 24px;
   }
 `;
 
@@ -232,27 +318,64 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  @media (max-width: 900px) {
-    padding: 12px 12px 12px 12px;
-    font-size: 1rem;
+  height: 54px;
+  @media (max-width: 900px) and (min-width: 601px) {
+    padding: 12px 0 0 0;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    height: 44px;
+    img {
+      margin: 0 auto;
+      display: block;
+      height: 32px;
+      max-width: 80%;
+      width: auto;
+    }
+  }
+  @media (max-width: 600px) {
+    padding: 10px 0 10px 0;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    height: 54px;
+    img {
+      margin: 0 auto;
+      display: block;
+      height: 48px;
+      max-width: 90%;
+      width: auto;
+    }
+  }
+  img {
+    height: 24px;
+    width: auto;
+    max-width: 100%;
+    display: block;
   }
 `;
 
 const Menu = styled.ul`
   list-style: none;
-  padding: 0 0 0 0;
+  padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
   align-items: center;
-  @media (max-width: 900px) {
-    flex-direction: row;
-    gap: 6px;
+  @media (max-width: 900px) and (min-width: 601px) {
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0;
+  }
+  @media (max-width: 600px) {
+    gap: 22px;
     align-items: flex-start;
     width: 100%;
     justify-content: flex-start;
-    padding: 0 8px;
+    padding: 0 18px;
   }
 `;
 
@@ -260,19 +383,61 @@ const MenuItem = styled.li<{ active?: boolean }>`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 18px;
+  padding: 10px 22px;
   color: ${({ active }) => (active ? "#fff" : "#222")};
   background: ${({ active }) => (active ? "#d26a3a" : "transparent")};
   border-radius: 8px;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.08rem;
   transition: background 0.2s, color 0.2s;
-  width: 94%;
+  width: 100%;
   cursor: pointer;
-  @media (max-width: 900px) {
-    width: auto;
-    font-size: 0.97rem;
-    padding: 6px 10px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  position: relative;
+  @media (max-width: 900px) and (min-width: 601px) {
+    justify-content: center;
+    padding: 0;
+    width: 100%;
+    font-size: 1.1rem;
+    border-radius: 50%;
+    background: transparent;
+    color: ${({ active }) => (active ? "#d26a3a" : "#222")};
+    min-height: 36px;
+    min-width: 36px;
+    height: 36px;
+    margin: 4px 0;
+    .menu-text { display: none; }
+    svg {
+      z-index: 2;
+      font-size: 22px;
+    }
+    &::before {
+      content: '';
+      display: ${({ active }) => (active ? 'block' : 'none')};
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 36px;
+      height: 36px;
+      background: #d26a3a;
+      border-radius: 50%;
+      z-index: 1;
+    }
+    svg {
+      color: ${({ active }) => (active ? '#fff' : '#222')};
+      position: relative;
+    }
+  }
+  @media (max-width: 600px) {
+    font-size: 1.05rem;
+    padding: 10px 10px;
+    width: 100%;
+    .menu-text { display: inline; }
+    border-radius: 8px;
+    background: ${({ active }) => (active ? "#d26a3a" : "transparent")};
+    color: ${({ active }) => (active ? "#fff" : "#222")};
   }
 `;
 
@@ -348,6 +513,7 @@ const Main = styled.main`
   flex: 1;
   padding: 24px 0 0 0;
   background: #fafafa;
+  min-width: 0;
   @media (max-width: 900px) {
     padding: 12px 0 0 0;
   }
@@ -481,8 +647,7 @@ const Table = styled.table`
     font-size: 0.93rem;
   }
   @media (max-width: 600px) {
-    min-width: 400px;
-    font-size: 0.91rem;
+    display: none;
   }
 `;
 
@@ -582,6 +747,163 @@ const PageNav = styled.button<{ active?: boolean }>`
   &:hover {
     background: #e2bfa7;
     color: #a05223;
+  }
+`;
+
+const EventsCardsMobile = styled.div`
+  display: none;
+  @media (max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 60px;
+    margin-top: 8px;
+  }
+`;
+
+const EventCard = styled.div`
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #ececec;
+  padding: 12px 14px 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+`;
+
+const EventCardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+`;
+
+const EventIconArea = styled.div`
+  background: #f7e7db;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const EventCardTitle = styled.div`
+  flex: 1;
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #d26a3a;
+  line-height: 1.2;
+  margin-left: 4px;
+`;
+
+const EventCardMenu = styled.div`
+  margin-left: auto;
+`;
+
+const EventCardInfoRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+`;
+
+const EventCardLabel = styled.span`
+  color: #b0b0b0;
+  font-size: 0.97rem;
+`;
+
+const EventCardValue = styled.span`
+  color: #222;
+  font-size: 0.97rem;
+  font-weight: 500;
+`;
+
+const EventStatusBadge = styled.span<{ativo?: boolean}>`
+  background: ${({ativo}) => ativo ? '#eafbe7' : '#fdeaea'};
+  color: ${({ativo}) => ativo ? '#2ecc40' : '#e74c3c'};
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  padding: 2px 12px;
+  display: inline-block;
+`;
+
+const HamburgerBar = styled.div`
+  display: none;
+  @media (max-width: 600px) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-bottom: 1px solid #ececec;
+    padding: 0 12px;
+    height: 54px;
+    position: sticky;
+    top: 0;
+    z-index: 101;
+  }
+`;
+
+const HamburgerButton = styled.button`
+  background: none;
+  border: none;
+  color: #d26a3a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  @media (min-width: 601px) {
+    display: none;
+  }
+`;
+
+const LogoMobile = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #c46a32;
+  letter-spacing: 1px;
+  justify-content: center;
+  width: 100%;
+  img {
+    margin: 0 auto;
+    display: block;
+    height: 48px;
+    max-width: 90%;
+    width: auto;
+  }
+`;
+
+const CloseMenuButton = styled.button`
+  display: none;
+  @media (max-width: 600px) {
+    display: flex;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #d26a3a;
+    cursor: pointer;
+    z-index: 201;
+  }
+`;
+
+const SidebarOverlay = styled.div`
+  @media (max-width: 600px) {
+    content: '';
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.18);
+    z-index: 100;
   }
 `;
 
