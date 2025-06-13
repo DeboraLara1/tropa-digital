@@ -1,59 +1,64 @@
-💻 Desafio Técnico - Tela de Login e Navegação
-Este projeto é parte de um desafio técnico para a vaga de Front-End e tem como objetivo demonstrar conhecimentos em React ou Next.js, estilização com Styled Components ou SCSS, implementação de rotas e simulação de um fluxo de login.
+# 💻 Desafio Técnico - Tela de Login e Navegação
 
-🚀 Tecnologias utilizadas
-React (ou Next.js)
+Este projeto foi desenvolvido como parte de um desafio técnico para a vaga de Desenvolvedor(a) Front-End. O objetivo é demonstrar conhecimentos em **React**, estilização com **Styled Components**, uso de **rotas protegidas** e **simulação de autenticação**.
 
-Styled Components (ou SCSS)
+---
 
-React Router DOM (se React puro)
+## 🚀 Tecnologias Utilizadas
 
-Vite ou Create React App (caso React)
+- ⚛️ React
+- 🎨 Styled Components 
+- 🔁 React Router DOM 
+- ⚒️ Create React App
+- 🟦 TypeScript
 
-TypeScript (opcional, se utilizado)
+---
 
-📦 Funcionalidades
-✅ Tela de login funcional (fluxo simulado, sem autenticação real)
+## 📦 Funcionalidades
 
-✅ Estilização com Styled Components ou SCSS
+- ✅ Tela de **login funcional** (fluxo simulado)
+- ✅ **Estilização** com Styled Components 
+- ✅ **Rotas protegidas**: acesso apenas após login simulado (Para acessar podem digitar qualquer usuario e senha para ter acesso a outras rotas)
+- ✅ **Redirecionamento automático** baseado no status de autenticação
+- ✅ **Responsividade básica** para dispositivos móveis
 
-✅ Rotas protegidas (páginas acessíveis apenas após login simulado)
+---
 
-✅ Redirecionamento automático com base no status de autenticação
+## 🔐 Fluxo de Login Simulado
 
-✅ Responsividade básica para dispositivos móveis
+1. Usuário insere um e-mail e senha fictícios (validação simples no front-end)
+2. Ao clicar em **Entrar**, o controle de autenticação está sendo feito apenas via estado (useState) no contexto (AuthContext),
+3. O usuário é redirecionado para uma **página interna protegida**
+4. Ao clicar em **Sair**, o usuário é deslogado apenas no estado do React (contexto) e o usuário é redirecionado para a tela de login.
 
-🔐 Fluxo de Login Simulado
-O usuário insere um e-mail e senha fictícios (validação simples no front-end)
+---
 
-Ao clicar em Entrar, o sistema armazena um token simulado no localStorage ou context
-
-O usuário é redirecionado para a página interna protegida
-
-Ao clicar em Sair, o token é removido e o usuário volta para a tela de login
-
-📂 Estrutura de Pastas (exemplo)
-css
-Copiar
-Editar
+## 📁 Estrutura de Pastas (Exemplo)
+```
 src/
-├── assets/
-├── components/
-├── pages/
-│   ├── Login.jsx
-│   ├── Dashboard.jsx
-│   └── ProtectedRoute.jsx
-├── routes/
-│   └── AppRoutes.jsx
-├── styles/
-│   └── globalStyles.js
-└── App.jsx
-▶️ Como rodar o projeto localmente
-bash
-Copiar
-Editar
+├── assets/              # Imagens e ícones
+├── components/          # Componentes reutilizáveis
+├── context/             # Contextos de autenticação
+├── pages/               # Páginas principais
+│   ├── Dashboard/       # Tela interna protegida
+│   └── Login/           # Tela de login
+├── App.css              # Estilos globais
+├── App.test.tsx         # Testes do componente App
+├── App.tsx              # Componente principal da aplicação
+├── index.css            # Estilos base
+├── index.tsx            # Ponto de entrada da aplicação
+├── react-app-env.d.ts   # Tipagens para o React
+├── reportWebVitals.ts   # Métricas de performance
+├── setupTests.ts        # Configuração de testes
+
+```
+---
+
+## ▶️ Como Rodar o Projeto Localmente
+
+```bash
 # 1. Clone o repositório
-git clone https://github.com/seu-usuario/seu-projeto.git
+git clone https://github.com/DeboraLara1/tropa-digital.git
 cd seu-projeto
 
 # 2. Instale as dependências
@@ -61,14 +66,14 @@ npm install
 
 # 3. Inicie o servidor de desenvolvimento
 npm run dev
-Certifique-se de ter o Node.js e o npm/yarn instalados na máquina.
+```
+---
 
-📝 Considerações
-O projeto tem foco apenas no front-end.
+## 📝 Considerações
+- O projeto tem foco exclusivo no front-end
 
-O login não consome uma API externa; o fluxo é simulado internamente.
+- O fluxo de login é simulado, sem integração com APIs externas
 
-O código segue princípios de componentização e separação de responsabilidades.
+- O código segue boas práticas de componentização e organização
 
-📄 Licença
-Este projeto é apenas para fins de avaliação técnica.
+- A responsividade foi aplicada para garantir uma boa experiência mobile
